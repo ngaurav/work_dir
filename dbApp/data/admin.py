@@ -6,12 +6,15 @@ from .models import Client, RegularUser, Page, ProUser, Disease, Event, Record, 
 
 # Define an inline admin descriptor for Employee model
 class ClientInline(admin.StackedInline):
-  model = Client
-  can_delete = False
+    model = Client
+    can_delete = False
 
 # Define a new User admin
 class UserAdmin(UserAdmin):
-  inlines = (ClientInline, )
+    inlines = (ClientInline, )
+
+class CityAdmin(admin.ModelAdmin):
+    pass
 
 class RegularUserAdmin(admin.ModelAdmin):
     pass
@@ -38,6 +41,7 @@ class ReviewAdmin(admin.ModelAdmin):
     pass
 
 # Re-register UserAdmin
+admin.site.register(City, CityAdmin)
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(RegularUser, RegularUserAdmin)
