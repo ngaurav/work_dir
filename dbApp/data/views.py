@@ -1,5 +1,10 @@
 from django.shortcuts import render
 from .forms import UserForm, ClientForm
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+
+def index(request):
+	return render(request, 'data/index.html', {})
 
 def register(request):
 
@@ -12,7 +17,7 @@ def register(request):
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
+        profile_form = ClientForm(data=request.POST)
 
         # If the two forms are valid...
         if user_form.is_valid() and profile_form.is_valid():
@@ -32,8 +37,8 @@ def register(request):
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
+            if 'pic' in request.FILES:
+                profile.pic = request.FILES['pic']
 
             # Now we save the UserProfile model instance.
             profile.save()
@@ -51,9 +56,53 @@ def register(request):
     # These forms will be blank, ready for user input.
     else:
         user_form = UserForm()
-        profile_form = UserProfileForm()
+        profile_form = ClientForm()
 
     # Render the template depending on the context.
     return render(request,
-            'rango/register.html',
+            'data/register.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
+
+
+
+def user_login(request):
+
+    # If the request is a HTTP POST, try to pull out the relevant information.
+    if request.method == 'POST':
+        
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect('/data/')
+            else:
+                return HttpResponse("Your Rango account is disabled.")
+        else:
+            print "Invalid login details: {0}, {1}".format(username, password)
+            return HttpResponse("Invalid login details supplied.")
+
+    else:
+        return render(request, 'data/login.html', {})
+
+
+def ajax_login(request):
+
+    if request.method == 'POST':
+        data = {}
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if (not user is None) and (user.is_active):
+            login(request, user)
+            if not request.POST.get('rem', None):
+                request.session.set_expiry(0)
+            data['success'] = "You have been successfully Logged In"
+        else:
+            data['error'] = "There was an error logging you in. Please Try again"
+        return JsonResponse(data)
+    else:
+    	return render(request, 'data/login.html', {})
