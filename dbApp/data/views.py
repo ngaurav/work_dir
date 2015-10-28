@@ -1,7 +1,31 @@
 from django.shortcuts import render
-from .forms import UserForm, ClientForm
+from .forms import UserForm, ClientForm, PageForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+
+def add_page(request):
+    # A HTTP POST?
+    if request.method == 'POST':
+        form = PageForm(request.POST)
+
+        # Have we been provided with a valid form?
+        if form.is_valid():
+            # Save the new category to the database.
+            form.save(commit=True)
+
+            # Now call the index() view.
+            # The user will be shown the homepage.
+            return register(request)
+        else:
+            # The supplied form contained errors - just print them to the terminal.
+            print form.errors
+    else:
+        # If the request was not a POST, display the form to enter details.
+        form = PageForm()
+
+    # Bad form (or form details), no form supplied...
+    # Render the form with error messages (if any).
+    return render(request, 'data/add_page.html', {'form': form})
 
 def index(request):
 	return render(request, 'data/index.html', {})
