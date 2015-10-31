@@ -1,31 +1,67 @@
 from django.shortcuts import render
-from .forms import UserForm, ClientForm, PageForm
+from .forms import UserForm, ClientForm, PageForm, RecordForm, ReviewForm, DiseaseForm, EventForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 def add_page(request):
-    # A HTTP POST?
     if request.method == 'POST':
         form = PageForm(request.POST)
-
-        # Have we been provided with a valid form?
         if form.is_valid():
-            # Save the new category to the database.
             form.save(commit=True)
-
-            # Now call the index() view.
-            # The user will be shown the homepage.
             return register(request)
         else:
-            # The supplied form contained errors - just print them to the terminal.
             print form.errors
     else:
-        # If the request was not a POST, display the form to enter details.
         form = PageForm()
-
-    # Bad form (or form details), no form supplied...
-    # Render the form with error messages (if any).
     return render(request, 'data/add_page.html', {'form': form})
+
+def add_disease(request):
+    if request.method == 'POST':
+        form = DiseaseForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            return register(request)
+        else:
+            print form.errors
+    else:
+        form = DiseaseForm()
+    return render(request, 'data/add_disease.html', {'form': form})
+
+def add_event(request):
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            return register(request)
+        else:
+            print form.errors
+    else:
+        form = EventForm()
+    return render(request, 'data/add_event.html', {'form': form})
+
+def add_record(request):
+    if request.method == 'POST':
+        form = RecordForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            return register(request)
+        else:
+            print form.errors
+    else:
+        form = RecordForm()
+    return render(request, 'data/add_record.html', {'form': form})
+
+def add_review(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            return register(request)
+        else:
+            print form.errors
+    else:
+        form = ReviewForm()
+    return render(request, 'data/add_review.html', {'form': form})
 
 def index(request):
 	return render(request, 'data/index.html', {})

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class City(models.Model):
-    name = models.CharField(max_length=20, blank=False, null=False, verbose_name="Diaplay Name")
+    name = models.CharField(max_length=20, blank=False, null=False, verbose_name="City Name")
     country_code = models.PositiveSmallIntegerField(blank=False, null=False, verbose_name="Country Code")
     long = models.DecimalField(null=False, blank=False, max_digits=8, decimal_places=3, verbose_name="Longitude")
     lat = models.DecimalField(null=False, blank=False, max_digits=8, decimal_places=3, verbose_name="Latitude")
@@ -43,8 +43,8 @@ class ProUser(models.Model):
             return self.client.user.username
 
 class Disease(models.Model):
-    common_name = models.CharField(max_length=20, blank=False, null=False, verbose_name="Diaplay Name")
-    medical_name = models.CharField(max_length=20, blank=False, null=False, verbose_name="Medical Name")
+    common_name = models.CharField(max_length=20, blank=False, null=False, verbose_name="Common Name")
+    medical_name = models.CharField(max_length=40, blank=False, null=False, verbose_name="Medical Name")
     description = models.TextField(max_length = 512,
         default='', help_text="placeholder for symptoms and prevention measures")
     def __unicode__(self):
@@ -60,9 +60,10 @@ class Event(models.Model):
             return self.disease.common_name
 
 class Record(models.Model):
-    timestamp = models.DateTimeField(null=False, blank=False)
+    date = models.DateField(null=False, blank=False)
     event = models.ForeignKey(Event, null=False, blank=False)
     page = models.ForeignKey(Page, null=True, blank=True)
+    description = models.TextField(max_length = 512, default='')
     def __unicode__(self):
             return self.timestamp
 
