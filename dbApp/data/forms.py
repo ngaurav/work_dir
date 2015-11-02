@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Client, Page, Event, Disease, Record, Review
+from .models import Client, RegularUser, ProUser, Page, Event, Disease, Record, Review
 from django.forms.extras.widgets import SelectDateWidget
 from django.forms.widgets import SplitDateTimeWidget
 
@@ -15,6 +15,17 @@ class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
         fields = ('address', 'city', 'pro', 'pic', 'contact', )
+
+class RegularUserForm(forms.ModelForm):
+    date_of_birth = forms.DateField(widget=SelectDateWidget())
+    class Meta:
+        model = RegularUser
+        exclude = ('client', )
+
+class ProUserForm(forms.ModelForm):
+    class Meta:
+        model = ProUser
+        exclude = ('client', )
 
 class PageForm(forms.ModelForm):
     class Meta:

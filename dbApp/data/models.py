@@ -55,24 +55,24 @@ class Event(models.Model):
     end_date = models.DateField(blank=False, null=False, verbose_name="End Date")
     city = models.ForeignKey(City, null=False, blank=False)
     disease = models.ForeignKey(Disease, null=False, blank=False)
-    client = models.ForeignKey(RegularUser, null=False, blank=False)
+    client = models.ForeignKey(User, null=False, blank=False)
     def __unicode__(self):
             return self.disease.common_name
 
 class Record(models.Model):
-    date = models.DateField(null=False, blank=False)
+    date = models.DateField(blank=False, null=False, auto_now_add=True)
     event = models.ForeignKey(Event, null=False, blank=False)
     page = models.ForeignKey(Page, null=True, blank=True)
     description = models.TextField(max_length = 512, default='')
     def __unicode__(self):
-            return self.timestamp
+            return str(self.date)
 
 class Review(models.Model):
-    author = models.ForeignKey(RegularUser, null=False, blank=False)
+    author = models.ForeignKey(User, null=False, blank=False)
     comments = models.TextField(max_length = 512, default='')
     date = models.DateTimeField(editable = True, auto_now=True)
     page = models.ForeignKey(Page, null=False, blank=False)
     disease = models.ForeignKey(Disease, null=False, blank=False)
     rating = models.PositiveSmallIntegerField(null=False, blank=False)
     def __unicode__(self):
-            return self.author + " " + self.page
+            return str(self.author) + " " + str(self.page)

@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('auth', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -16,7 +17,7 @@ class Migration(migrations.Migration):
             name='City',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=20, verbose_name=b'Diaplay Name')),
+                ('name', models.CharField(max_length=20, verbose_name=b'City Name')),
                 ('country_code', models.PositiveSmallIntegerField(verbose_name=b'Country Code')),
                 ('long', models.DecimalField(verbose_name=b'Longitude', max_digits=8, decimal_places=3)),
                 ('lat', models.DecimalField(verbose_name=b'Latitude', max_digits=8, decimal_places=3)),
@@ -43,8 +44,8 @@ class Migration(migrations.Migration):
             name='Disease',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('common_name', models.CharField(max_length=20, verbose_name=b'Diaplay Name')),
-                ('medical_name', models.CharField(max_length=20, verbose_name=b'Medical Name')),
+                ('common_name', models.CharField(max_length=20, verbose_name=b'Common Name')),
+                ('medical_name', models.CharField(max_length=40, verbose_name=b'Medical Name')),
                 ('description', models.TextField(default=b'', help_text=b'placeholder for symptoms and prevention measures', max_length=512)),
             ],
             options={
@@ -58,6 +59,8 @@ class Migration(migrations.Migration):
                 ('start_date', models.DateField(verbose_name=b'Start Date')),
                 ('end_date', models.DateField(verbose_name=b'End Date')),
                 ('city', models.ForeignKey(to='data.City')),
+                ('client', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('disease', models.ForeignKey(to='data.Disease')),
             ],
             options={
             },
@@ -91,7 +94,8 @@ class Migration(migrations.Migration):
             name='Record',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('timestamp', models.DateTimeField()),
+                ('date', models.DateField(auto_now_add=True)),
+                ('description', models.TextField(default=b'', max_length=512)),
                 ('event', models.ForeignKey(to='data.Event')),
                 ('page', models.ForeignKey(blank=True, to='data.Page', null=True)),
             ],
@@ -118,24 +122,12 @@ class Migration(migrations.Migration):
                 ('comments', models.TextField(default=b'', max_length=512)),
                 ('date', models.DateTimeField(auto_now=True)),
                 ('rating', models.PositiveSmallIntegerField()),
-                ('author', models.ForeignKey(to='data.RegularUser')),
+                ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
                 ('disease', models.ForeignKey(to='data.Disease')),
                 ('page', models.ForeignKey(to='data.Page')),
             ],
             options={
             },
             bases=(models.Model,),
-        ),
-        migrations.AddField(
-            model_name='event',
-            name='client',
-            field=models.ForeignKey(to='data.RegularUser'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='event',
-            name='disease',
-            field=models.ForeignKey(to='data.Disease'),
-            preserve_default=True,
         ),
     ]
