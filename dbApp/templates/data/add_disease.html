@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Rango</title>
+    </head>
+
+    <body>
+        <h1>Add a Disease</h1>
+
+        <form id="category_form" method="post" action="/add_disease/">
+
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <input type="submit" name="submit" value="Add" />
+        </form>
+    </body>
+
+</html>
