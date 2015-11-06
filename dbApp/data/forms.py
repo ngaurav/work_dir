@@ -30,7 +30,7 @@ class ProUserForm(forms.ModelForm):
 class PageForm(forms.ModelForm):
     class Meta:
         model = Page
-        exclude = ('verified', )
+        fields = ('name', 'image',)
 
 class DiseaseForm(forms.ModelForm):
     class Meta:
@@ -53,4 +53,4 @@ class RecordForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ('author', 'comments', 'page', 'disease', 'rating', )
+        fields = ( 'comments', 'disease', 'rating', )

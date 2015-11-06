@@ -25,11 +25,11 @@
 	{% for review in page.review_set.all %}
 	
           <tr>
-                <td>{{ page.author }}</td>
-                <td>{{ page.date }}</td>
-                <td>{{ page.disease }}</td>
-                <td>{{ page.comments }}</td>
-                <td>{{ page.rating }}</td>
+                <td>{{ review.author }}</td>
+                <td>{{ review.date }}</td>
+                <td>{{ review.disease }}</td>
+                <td>{{ review.comments }}</td>
+                <td>{{ review.rating }}</td>
           </tr>
 	
 	{% endfor %}

@@ -55,7 +55,7 @@ class Event(models.Model):
     end_date = models.DateField(blank=False, null=False, verbose_name="End Date")
     city = models.ForeignKey(City, null=False, blank=False)
     disease = models.ForeignKey(Disease, null=False, blank=False)
-    client = models.ForeignKey(User, null=False, blank=False)
+    client = models.ForeignKey(User, null=True, blank=True)
     def __unicode__(self):
             return self.disease.common_name
 

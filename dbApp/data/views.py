@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserForm, ClientForm, RegularUserForm, ProUserForm, PageForm, RecordForm, ReviewForm, DiseaseForm, EventForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from . models import *
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 @login_required
 def dashboard(request):
@@ -44,8 +45,11 @@ def add_page(request):
     if request.method == 'POST':
         form = PageForm(request.POST)
         if form.is_valid():
-            form.save(commit=True)
-            return register(request)
+            page = form.save(commit=False)
+            if 'image' in request.FILES:
+                page.image = request.FILES['image']
+            page.save()
+            return dashboard(request)
         else:
             print (form.errors)
     else:
@@ -79,10 +83,10 @@ def add_disease(request):
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
-        form.save(commit=True)
-        form.client = request.user
         if form.is_valid():
-            form.save(commit=True)
+            event = form.save(commit=False)
+            event.client = request.user
+            event.save()
             return register(request)
         else:
             print (form.errors)
@@ -103,7 +107,7 @@ def edit_event(request, id):
         else:
             print (form.errors)
     else:
-        form = EventForm()
+        form = EventForm(instance=event)
     return render(request, 'data/add_event.html', {'form': form})
 
 @login_required
@@ -119,17 +123,18 @@ def add_record(request, id=None, event_id=None):
             form = RecordForm(request.POST, instance=record)
         else:
             form = RecordForm(request.POST)
-        form.save(commit=False)
-        if event_id:
-            event = get_object_or_404(Event, pk=event_id)
-            form.event = event
-        else :
-            raise PermissionDenied
         if form.is_valid():
-            form.save()
-            return register(request)
+            record = form.save(commit=False)
+            if event_id:
+                event = get_object_or_404(Event, pk=event_id)
+                record.event = event
+                record.save()
+                return dashboard(request)  
+            else :
+                raise PermissionDenied
         else:
             print (form.errors)
+        
     else:
         if id:
             form = RecordForm(instance=record)
@@ -138,18 +143,37 @@ def add_record(request, id=None, event_id=None):
     return render(request, 'data/add_record.html', {'form': form})
 
 @login_required
-def add_review(request):
+def add_review(request, id=None, page_id=None):
+    if id:
+        review = get_object_or_404(Review, pk=id)
+        if review.author != request.user:
+            raise PermissionDenied
+    else:
+        review = None
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        if id:
+            form = ReviewForm(request.POST, instance=review)
+        else:
+            form = ReviewForm(request.POST)
         if form.is_valid():
-            form.save(commit=True)
-            return register(request)
+            review = form.save(commit=False)
+            if page_id:
+                page = get_object_or_404(Page, pk=page_id)
+                review.page = page
+                review.author = request.user
+                review.save()
+                return dashboard(request)  
+            else :
+                raise PermissionDenied
         else:
             print (form.errors)
+        
     else:
-        form = ReviewForm()
+        if id:
+            form = ReviewForm(instance=review)
+        else:
+            form = ReviewForm()
     return render(request, 'data/add_review.html', {'form': form})
-
 
 def register(request):
     registered = False
@@ -184,13 +208,13 @@ def register(request):
             print (user_form.errors)
             print (client_form.errors)
     else:
-        if not request.user.is_authenticated:
+        if request.user.is_authenticated():
+            return HttpResponseRedirect('/dashboard/')
+        else:
             user_form = UserForm()
             client_form = ClientForm()
             pro_form = ProUserForm()
             regular_form = RegularUserForm()
-        else:
-            redirect('/dashboard')
     return render(request,
             'data/register.html',
             {'user_form': user_form, 'client_form': client_form, 'pro_form': pro_form, 'regular_form': regular_form, 'registered': registered} )
