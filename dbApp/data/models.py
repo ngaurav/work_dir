@@ -70,7 +70,7 @@ class Record(models.Model):
 class Review(models.Model):
     author = models.ForeignKey(User, null=False, blank=False)
     comments = models.TextField(max_length = 512, default='')
-    date = models.DateTimeField(editable = True, auto_now=True)
+    date = models.DateField(editable = True, auto_now=True)
     page = models.ForeignKey(Page, null=False, blank=False)
     disease = models.ForeignKey(Disease, null=False, blank=False)
     rating = models.PositiveSmallIntegerField(null=False, blank=False)
