@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+    <hr/>
+    <br/>
+    
+    <table>
+        <thead>
+          <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>City</th>
+                <th>Disease</th>
+                <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+	{% for event in events %}
+	
+          <tr>
+                <td>{{ event.start_date }}</td>
+                <td>{{ event.end_date }}</td>
+                <td>{{ event.city }}</td>
+                <td>{{ event.disease }}</td>
+                <td><a style="cursor:pointer" href="/event/{{ event.id }}/">View Details</a></td>
+          </tr>
+	
+	{% endfor %}
+	</tbody>
+    </table>
+
+{% endblock %}

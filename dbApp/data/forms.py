@@ -42,13 +42,13 @@ class EventForm(forms.ModelForm):
     end_date = forms.DateField(widget=SelectDateWidget())
     class Meta:
         model = Event
-        fields = ('start_date', 'end_date', 'city', 'disease', 'client', )
+        fields = ('start_date', 'end_date', 'city', 'disease', )
 
 class RecordForm(forms.ModelForm):
     date = forms.DateField(widget=SelectDateWidget())
     class Meta:
         model = Record
-        fields = ('date', 'event', 'page', 'description', )
+        fields = ('date', 'page', 'description', )
 
 class ReviewForm(forms.ModelForm):
     class Meta:

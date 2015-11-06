@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Event{% endblock %}
+
+{% block content %}
+
+    <hr/>
+    <br/>
+
+    <p> <strong>Start date:</strong> {{event.start_date}}</p>
+    <p> <strong>End date:</strong> {{event.end_date}}</p>
+    <p> <strong>City:</strong> {{event.city}}</p>
+    <p> <strong>Disease:</strong> {{event.disease}}</p>
+    <table>
+        <thead>
+          <tr>
+                <th>Date</th>
+                <th>Doctor</th>
+                <th>Description</th>
+                <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+	{% for record in event.record_set.all %}
+	
+          <tr>
+                <td>{{ record.date }}</td>
+                <td>{{ record.page }}</td>
+                <td>{{ record.description }}</td>
+                <td><a style="cursor:pointer" href="/event/{{ event.id }}/{{record.id}}/">Edit</a></td>
+          </tr>
+	
+	{% endfor %}
+	</tbody>
+    </table>
+
+{% endblock %}
