@@ -9,7 +9,7 @@ from django.core.exceptions import PermissionDenied
 @login_required
 def user_logout(request):
     logout(request)
-    return render(request, 'data/logout.html', context)
+    return render(request, 'data/logout.html', {})
 
 @login_required
 def dashboard(request):
