@@ -32,6 +32,12 @@ class PageForm(forms.ModelForm):
         model = Page
         fields = ('name', 'image',)
 
+class PageContactForm(forms.ModelForm):
+    start_date = forms.BooleanField(widget=HiddenInput(), initial=True)
+    class Meta:
+        model = Page
+        fields = ('name', 'image', 'contact_details', 'verified')
+
 class DiseaseForm(forms.ModelForm):
     class Meta:
         model = Disease

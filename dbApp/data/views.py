@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UserForm, ClientForm, RegularUserForm, ProUserForm, PageForm, RecordForm, ReviewForm, DiseaseForm, EventForm
+from .forms import UserForm, ClientForm, RegularUserForm, ProUserForm, PageForm, PageContactForm, RecordForm, ReviewForm, DiseaseForm, EventForm
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from . models import *
@@ -8,9 +8,13 @@ from django.core.exceptions import PermissionDenied
 
 @login_required
 def dashboard(request):
-    events = Event.objects.filter(client=request.user)
-    context = {'event_list': events}
-    return render(request, 'data/dashboard.html', context)
+    client = get_object_or_404(Client, pk=request.user.id)
+    if client.pro:
+        raise PermissionDenied
+    else:
+        events = Event.objects.filter(client=request.user)
+        context = {'event_list': events}
+        return render(request, 'data/dashboard.html', context)
 
 @login_required
 def event_detail(request, id):
@@ -20,25 +24,13 @@ def event_detail(request, id):
     else:
         raise PermissionDenied
 
-# def edit_event(request, event_id):
-#     if request.method == 'POST':
-#         form = EventForm(request.POST)
-#         if form.is_valid():
-#             form.save(commit=True)
-#             return register(request)
-#         else:
-#             print form.errors
+# @login_required
+# def record_detail(request, id):
+#     record = get_object_or_404(Record, pk=id)
+#     if record.event.client == request.user:
+#         return render(request, 'data/record_detail.html', {'record': record})
 #     else:
-#         form = EventForm()
-#     return render(request, 'data/add_event.html', {'form': form})
-
-@login_required
-def record_detail(request, id):
-    record = get_object_or_404(Record, pk=id)
-    if record.event.client == request.user:
-        return render(request, 'data/record_detail.html', {'record': record})
-    else:
-        raise PermissionDenied
+#         raise PermissionDenied
 
 @login_required
 def add_page(request):
@@ -56,6 +48,26 @@ def add_page(request):
         form = PageForm()
     return render(request, 'data/add_page.html', {'form': form})
 
+@login_required
+def edit_page(request, id):
+    page = get_object_or_404(Event, pk=id)
+    if not page.verified:
+        raise PermissionDenied
+    pro_user = get_object_or_404(ProUser, page=page)
+    if pro_user.client != request.user:
+        raise PermissionDenied
+    if request.method == 'POST':
+        form = PageContactForm(request.POST, instance=page)
+        if form.is_valid():
+            form.save(commit=True)
+            return register(request)
+        else:
+            print (form.errors)
+    else:
+        form = PageContactForm(instance=page)
+    return render(request, 'data/add_page.html', {'form': form})
+
+
 def page_detail(request, id):
     page = get_object_or_404(Page, pk=id)
     return render(request, 'data/page_detail.html', {'page': page})
@@ -66,7 +78,8 @@ def page_list(request):
 
 @login_required
 def add_disease(request):
-    if not request.user.client.pro :
+    client = get_object_or_404(Client, pk=request.user.id)
+    if client.pro:
         raise PermissionDenied
     if request.method == 'POST':
         form = DiseaseForm(request.POST)
@@ -81,6 +94,9 @@ def add_disease(request):
 
 @login_required
 def add_event(request):
+    client = get_object_or_404(Client, pk=request.user.id)
+    if client.pro:
+        raise PermissionDenied
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
@@ -112,6 +128,9 @@ def edit_event(request, id):
 
 @login_required
 def add_record(request, id=None, event_id=None):
+    client = get_object_or_404(Client, pk=request.user.id)
+    if client.pro:
+        raise PermissionDenied
     if id:
         record = get_object_or_404(Record, pk=id)
         if record.event.client != request.user:
@@ -144,6 +163,9 @@ def add_record(request, id=None, event_id=None):
 
 @login_required
 def add_review(request, id=None, page_id=None):
+    client = get_object_or_404(Client, pk=request.user.id)
+    if client.pro:
+        raise PermissionDenied
     if id:
         review = get_object_or_404(Review, pk=id)
         if review.author != request.user:

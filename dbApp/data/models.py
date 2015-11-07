@@ -10,7 +10,7 @@ class City(models.Model):
         return self.name
 
 class Client(models.Model):
-    user = models.OneToOneField(User, primary_key=True)
+    user = models.OneToOneField(User, primary_key=True, related_name='client')
     address = models.CharField(max_length=20, blank=False, null=False, verbose_name="Address")
     city = models.ForeignKey(City, null=False, blank=False)
     pro = models.BooleanField(default=False)
@@ -30,6 +30,7 @@ class Page(models.Model):
     name = models.CharField(max_length=20, blank=False, null=False, verbose_name="Display Name")
     verified = models.BooleanField(default=False)
     image = models.ImageField(null=True, blank=True, upload_to='page_images')
+    contact_details = models.TextField(max_length=50, blank=True, null=True, verbose_name="Contact Details")
     def __unicode__(self):
             return self.name
 
