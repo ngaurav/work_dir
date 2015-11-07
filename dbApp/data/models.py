@@ -8,12 +8,15 @@ class City(models.Model):
     lat = models.DecimalField(null=False, blank=False, max_digits=8, decimal_places=3, verbose_name="Latitude")
     def __unicode__(self):
         return self.name
+    class Meta:
+        verbose_name = "City"
+        verbose_name_plural = "Cities"
 
 class Client(models.Model):
     user = models.OneToOneField(User, primary_key=True, related_name='client')
     address = models.CharField(max_length=20, blank=False, null=False, verbose_name="Address")
     city = models.ForeignKey(City, null=False, blank=False)
-    pro = models.BooleanField(default=False)
+    pro = models.BooleanField(default=False,  verbose_name="Professional account", help_text="Check only for professional accounts")
     pic = models.ImageField(null=True, blank=True, upload_to='user_images')
     contact = models.CharField(max_length=15, blank=False, null=False, verbose_name="Contact Number")
     def __unicode__(self):
@@ -61,7 +64,7 @@ class Event(models.Model):
             return self.disease.common_name
 
 class Record(models.Model):
-    date = models.DateField(blank=False, null=False, auto_now_add=True)
+    date = models.DateField(blank=False, null=False)
     event = models.ForeignKey(Event, null=False, blank=False)
     page = models.ForeignKey(Page, null=True, blank=True)
     description = models.TextField(max_length = 512, default='')

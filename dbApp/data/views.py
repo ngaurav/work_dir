@@ -126,7 +126,7 @@ def add_event(request):
             event = form.save(commit=False)
             event.client = request.user
             event.save()
-            return register(request)
+            return redirect('/')
         else:
             print (form.errors)
     else:
@@ -142,7 +142,7 @@ def edit_event(request, id):
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
             form.save(commit=True)
-            return register(request)
+            return redirect('/')
         else:
             print (form.errors)
     else:
