@@ -23,9 +23,9 @@
         </div>
         <div class="navbar-collapse collapse navbar-right" id="navbar-main">
             {% if user.is_authenticated %}
-                <button href="{% url 'logout' %}" class="btn btn-default">Logout</button>
+                <a href="{% url 'logout' %}" class="btn btn-default">Logout</a>
             {% else %}
-                <button href="{% url 'login' %}" class="btn btn-default">Login</button>
+                <a href="{% url 'login' %}" class="btn btn-default">Login</a>
             {% endif %}
     		<!-- <form class="navbar-form navbar-right" role="search" id="form-signin">
                 {% csrf_token %}
