@@ -6,14 +6,14 @@
 
     <hr/>
     <br/>
-    <h1>Add a Disease</h1>
+    <h1>Edit</h1>
 
     <form id="category_form" method="post" action="">
 
         {% csrf_token %}
         {{ form.as_p }}
 
-        <input type="submit" name="submit" value="Add" />
+        <input type="submit" name="submit" value="Submit" />
     </form>
 
 {% endblock %}

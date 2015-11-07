@@ -7,6 +7,11 @@
     <hr/>
     <br/>
     
+    <a href="{% url 'add_page' %}" class="btn btn-default">Add Pages</a>
+    <br/>
+    <br/>
+    <br/>
+
     <table>
         <thead>
           <tr>
@@ -23,7 +28,7 @@
           <tr>
                 <td>{{ page.name }}</td>
                 <td>{{ page.verified }}</td>
-                <td>{{ page.image }}</td>
+                <td><img src="{{ page.image.url }}"/></td>
                 <td><a style="cursor:pointer" href="/page/{{ page.id }}/">View Details</a></td>
           </tr>
 	

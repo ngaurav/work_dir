@@ -23,6 +23,7 @@
             <a class="navbar-brand" href="/">Global Health Records</a>
         </div>
         <div class="navbar-collapse collapse navbar-right" id="navbar-main">
+            <a href="{% url 'page_list' %}" class="btn btn-default">Public Profiles</a>
             {% if user.is_authenticated %}
                 <a href="{% url 'logout' %}" class="btn btn-default">Logout</a>
             {% else %}

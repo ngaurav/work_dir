@@ -48,7 +48,7 @@ def add_page(request):
             if 'image' in request.FILES:
                 page.image = request.FILES['image']
             page.save()
-            return dashboard(request)
+            return redirect('/page')
         else:
             print (form.errors)
     else:
@@ -66,7 +66,10 @@ def edit_page_contact(request, id):
     if request.method == 'POST':
         form = PageContactForm(request.POST, instance=page)
         if form.is_valid():
-            form.save(commit=True)
+            page = form.save(commit=False)
+            if 'image' in request.FILES:
+                page.image = request.FILES['image']
+            page.save()
             return redirect('/')
         else:
             print (form.errors)
@@ -100,7 +103,7 @@ def add_disease(request):
         form = DiseaseForm(request.POST)
         if form.is_valid():
             form.save(commit=True)
-            return register(request)
+            return redirect('/')
         else:
             print (form.errors)
     else:
@@ -207,7 +210,7 @@ def add_review(request, id=None, page_id=None):
                 review.page = page
                 review.author = request.user
                 review.save()
-                return dashboard(request)  
+                return redirect('/page/'+str(page_id))
             else :
                 raise PermissionDenied
         else:

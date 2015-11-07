@@ -9,6 +9,10 @@
     {% if page %}
         Click <a href="/page/{{ page.id }}/edit">here</a> to edit your page info.
     {% endif %}
+    <br/>
+    <a href="{% url 'add_disease' %}" class="btn btn-default">Add Disease</a>
+    <br/>
+    <br/>
     <table>
         <thead>
           <tr>

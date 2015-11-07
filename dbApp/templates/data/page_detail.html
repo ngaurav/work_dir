@@ -9,7 +9,9 @@
 
     <p> <strong>Name:</strong> {{page.name}}</p>
     <p> <strong>Verified:</strong> {{page.verified}}</p>
-    <p> <strong>Image:</strong> {{page.image}}</p>
+    <p> <strong>Image:</strong> <img src="{{ page.image.url }}"/></p>
+    <br/>
+    <div><a href="add_review/" class="btn btn-default">Add Review</a></div><br/>
     <table>
         <thead>
           <tr>

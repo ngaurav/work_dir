@@ -8,7 +8,8 @@ td{
 	padding-top : 5px;
 	padding-bottom : 5px;
 	background-color:#FFFFFF;
-	text-align:left;
+	text-align:center;
+	width: 20%;
 }
 th{
 	vertical-align:middle;
@@ -19,4 +20,9 @@ th{
 	background-color:#CEE3F6;
 	font-weight: bold;
 	text-align:center;
+	width: 20%;
+}
+img{
+	width: 100%;
+	max-width: 210px
 }
