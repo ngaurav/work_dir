@@ -25,7 +25,7 @@ class RegularUserForm(forms.ModelForm):
 class ProUserForm(forms.ModelForm):
     class Meta:
         model = ProUser
-        exclude = ('client', )
+        exclude = ('client', 'page',)
 
 class PageForm(forms.ModelForm):
     class Meta:
