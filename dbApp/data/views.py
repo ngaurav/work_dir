@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserForm, ClientForm, RegularUserForm, ProUserForm, PageForm, PageContactForm, RecordForm, ReviewForm, DiseaseForm, EventForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from . models import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return render(request, 'data/logout.html', context)
 
 @login_required
 def dashboard(request):

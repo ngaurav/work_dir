@@ -4,6 +4,7 @@ from . import views
 urlpatterns = patterns('',
     # url(r'^ajax_login/', views.ajax_login, name='ajax_login'),
     url(r'^login/', views.user_login, name='login'),
+    url(r'^logout/', views.user_logout, name='logout'),
     url(r'^dashboard/', views.dashboard, name='dashboard'),
     url(r'^dashboard/page', views.edit_page_contact, name='edit_page_contact'),
     url(r'^event/add/$', views.add_event, name='add_event'),
