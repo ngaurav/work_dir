@@ -33,7 +33,7 @@ class PageForm(forms.ModelForm):
         fields = ('name', 'image',)
 
 class PageContactForm(forms.ModelForm):
-    start_date = forms.BooleanField(widget=HiddenInput(), initial=True)
+    verified = forms.BooleanField(widget=forms.HiddenInput(), initial=True)
     class Meta:
         model = Page
         fields = ('name', 'image', 'contact_details', 'verified')

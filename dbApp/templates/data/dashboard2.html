@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+    <hr/>
+    <br/>
+    {% if page %}
+        Click <a href="/page/{{ page.id }}/edit">here</a> to edit your page info.
+    {% endif %}
+    <table>
+        <thead>
+          <tr>
+                <th>Common Name</th>
+                <th>Medical Name</th>
+                <th>Description</th>
+                <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+	{% for disease in disease_list %}
+	
+          <tr>
+                <td>{{ disease.common_name }}</td>
+                <td>{{ disease.medical_name }}</td>
+                <td>{{ disease.description }}</td>
+                <td><a style="cursor:pointer" href="/disease/{{ disease.id }}/">Edit Details</a></td>
+          </tr>
+	
+	{% endfor %}
+	</tbody>
+    </table>
+
+{% endblock %}

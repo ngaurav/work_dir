@@ -10,7 +10,9 @@ from django.core.exceptions import PermissionDenied
 def dashboard(request):
     client = get_object_or_404(Client, pk=request.user.id)
     if client.pro:
-        raise PermissionDenied
+        pro_user = get_object_or_404(ProUser, client=client)
+        disease_list = Disease.objects.all()
+        return render(request, 'data/dashboard2.html',{'disease_list': disease_list, 'page':pro_user.page})
     else:
         events = Event.objects.filter(client=request.user)
         context = {'event_list': events}
@@ -49,37 +51,45 @@ def add_page(request):
     return render(request, 'data/add_page.html', {'form': form})
 
 @login_required
-def edit_page(request, id):
-    page = get_object_or_404(Event, pk=id)
+def edit_page_contact(request, id):
+    page = get_object_or_404(Page, pk=id)
     if not page.verified:
         raise PermissionDenied
     pro_user = get_object_or_404(ProUser, page=page)
-    if pro_user.client != request.user:
+    if pro_user.client.user != request.user:
         raise PermissionDenied
     if request.method == 'POST':
         form = PageContactForm(request.POST, instance=page)
         if form.is_valid():
             form.save(commit=True)
-            return register(request)
+            return redirect('/')
         else:
             print (form.errors)
     else:
         form = PageContactForm(instance=page)
     return render(request, 'data/add_page.html', {'form': form})
 
-
-def page_detail(request, id):
-    page = get_object_or_404(Page, pk=id)
-    return render(request, 'data/page_detail.html', {'page': page})
-
-def page_list(request):
-    pages = Page.objects.order_by('name')
-    return render(request, 'data/page_list.html', {'pages': pages})
+@login_required
+def edit_disease(request, id):
+    client = get_object_or_404(Client, pk=request.user.id)
+    if not client.pro:
+        raise PermissionDenied
+    disease = get_object_or_404(Disease, pk=id)
+    if request.method == 'POST':
+        form = DiseaseForm(request.POST, instance=disease)
+        if form.is_valid():
+            form.save(commit=True)
+            return redirect('/')
+        else:
+            print (form.errors)
+    else:
+        form = DiseaseForm(instance=disease)
+    return render(request, 'data/add_disease.html', {'form': form})
 
 @login_required
 def add_disease(request):
     client = get_object_or_404(Client, pk=request.user.id)
-    if client.pro:
+    if not client.pro:
         raise PermissionDenied
     if request.method == 'POST':
         form = DiseaseForm(request.POST)
@@ -91,6 +101,14 @@ def add_disease(request):
     else:
         form = DiseaseForm()
     return render(request, 'data/add_disease.html', {'form': form})
+
+def page_detail(request, id):
+    page = get_object_or_404(Page, pk=id)
+    return render(request, 'data/page_detail.html', {'page': page})
+
+def page_list(request):
+    pages = Page.objects.order_by('name')
+    return render(request, 'data/page_list.html', {'pages': pages})
 
 @login_required
 def add_event(request):
@@ -224,6 +242,7 @@ def register(request):
                 myuser.client = client
                 myuser.save()
                 registered = True
+                return redirect('/login')
             else:
                 print (extra_form.errors)
         else:
@@ -257,7 +276,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/data/')
+                return HttpResponseRedirect('/')
             else:
                 return HttpResponse("Your Rango account is disabled.")
         else:
